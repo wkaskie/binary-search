@@ -4,7 +4,6 @@ const RANDOM_MODIFIER = 5; // 50 is arbitrarily chosen
 const range = (start, end) => {
     if (typeof start !== 'number' || typeof end !== 'number') { return null; }
     if (start === end) return;
-
     return Array.from(new Array(end - start).fill(null)).map((int, indx) => start + indx);
 }
 
@@ -78,34 +77,41 @@ const searchRecursive = (searchItem, searchArray) => {
 }
 
 // Testing helpers
-const test = (funcToTest) => {
-    return (...args) => {
+const test = (funcToTest) => 
+    (...args) => {
         console.log(funcToTest(...args));
     }
-}
 
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-const testAsync = (funcToTest) => {
-    return async (...args) => {
+const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const testAsync = (funcToTest) =>
+    async (...args) => {
         await funcToTest(...args);
-        return ' Done with ' + args[0] + ' using ' + funcToTest.name;
+        return { message: `Done with ${args[0]} using ${funcToTest.name}`, completionTime: +new Date() };
     }
-}
 
 // START TESTS
-const testArray = [...range(1, 9999990)];
+const testArray = [...range(1, 9999999)];
 const testBlotchyArray = [...randomRange(10)];
 const testAlphaArray = [...alphabetRange('b', 'x')];
 // const bigArray = [...new Array(10000)].map(() => ({name:"test"}));
 
 console.log(testArray, testBlotchyArray, testAlphaArray, /* bigArray */);
-console.log('********Searching simple array********');
+console.log('******** Searching simple array ********');
 [1, 9].forEach(num => test(searchRecursive)(num, testArray)); // output => 0, 8
 
-console.log('********Searching "blotchy" array********');
+console.log('******** Searching "blotchy" array ********');
 [25, 16, 44].forEach(num => test(search)(num, testBlotchyArray)); // may or may not match. Check the array
 
-console.log('********Searching alpha array********');
+console.log('******** Searching alpha array ********');
 ['e', 'z'].forEach(letter => test(searchRecursive)(letter, testAlphaArray)); // output => 3, -1
+
+console.log('******** Comparison ********');
+[9999992, 90].forEach(letter => {
+    let startTime = new Date().getTime();
+    test(searchHard)(letter, testArray);
+    console.log('Completion for slow: ' + (new Date().getTime() - startTime));
+
+    startTime = new Date().getTime();
+    test(search)(letter, testArray);
+    console.log('Completion for fast: ' + (new Date().getTime() - startTime));
+}); // Depends on the machine, but I've tested almost 200% improvement

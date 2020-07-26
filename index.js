@@ -98,9 +98,9 @@ const testAsync = (funcToTest) => {
 const testArray = [...range(1, 9999990)];
 const testBlotchyArray = [...randomRange(10)];
 const testAlphaArray = [...alphabetRange('b', 'x')];
-const bigArray = [...new Array(10000)].map(() => ({name:"test"}));
+// const bigArray = [...new Array(10000)].map(() => ({name:"test"}));
 
-console.log(testArray, testBlotchyArray, testAlphaArray, bigArray);
+console.log(testArray, testBlotchyArray, testAlphaArray, /* bigArray */);
 console.log('********Searching simple array********');
 [1, 9].forEach(num => test(searchRecursive)(num, testArray)); // output => 0, 8
 
